@@ -1,0 +1,40 @@
+.group{
+    display: flex;
+    width: 100%;;
+    align-items: center;
+    mat-form-field{
+        flex-grow: 1;
+        margin-right: 20px;
+    }
+}
+.dice{
+    display: flex;
+    padding:10px 20px;
+    align-items: center;   
+    .name{
+        flex-grow: 1;
+    }
+    .action{
+        margin-left:20px;
+    }
+    .result{
+        .dice-bg{
+            width:35px;
+            height:35px;
+        }
+    }
+    &.highest{
+        background-color: #fcc;
+    }
+    &.dicing{
+        background-color: #eee;
+    }
+}
+.admin{
+    margin-top: 50px;
+}
+.danger{
+    display: flex;
+    width:100%;
+    justify-content: space-evenly;
+}
