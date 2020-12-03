@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ApplicationRef, Component, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -7,35 +7,63 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  static API_URL = 'http://127.0.0.1/dice/api.php';
+  snowCount = 200;
+  snow:any=[];
+
+  static API_URL = 'api.php';
   name: string;
   isAdded = false;
   dices: Dice[];
   isDicing = false;
-  constructor(private http: HttpClient){
+  constructor(private http: HttpClient, private ngZone: NgZone, private ref: ApplicationRef){
       this.name = localStorage.getItem("name");
-      setInterval(() => this.updateList(), 20000);
+      setInterval(() => this.updateList(), 1000);
       this.updateList();
+      this.renderSnow();
+
+  }
+
+  private renderSnow() {
+    this.ngZone.runOutsideAngular(() => 
+    setTimeout(()=>{
+      if(this.snow.length<this.snowCount && Math.random()<0.5){
+        this.snow.push({y:-5,x:Math.random()*100,size:Math.random()*5+3,direction:Math.random()-0.5,speed:Math.random()*0.5+0.5});
+      }
+      let copy=[];
+      for(let s of this.snow){
+        s.y+=s.speed/3;
+        s.x+=s.direction/6;
+        if(s.y<105)
+          copy.push(s);
+      }
+      this.snow=copy;
+      this.ref.tick();
+      this.renderSnow();
+    },1000. / 30.));
   }
   async updateList() {
-    const newDices = await this.http.get<Dice[]>(AppComponent.API_URL).toPromise();
+    let newDices = await this.http.get<Dice[]>(AppComponent.API_URL).toPromise();
     if(this.isAdded){
       let data = newDices?.filter((d) => d.name === this.name);
       if(this.isDicing) {
         data = this.dices.filter((d) => d.name === this.name)
       }
-      this.dices = data.concat(newDices.filter((d) => d.name !== this.name));
-
-    } else {
+      newDices = data.concat(newDices.filter((d) => d.name !== this.name));
+    }
+    if(JSON.stringify(this.dices) !== JSON.stringify(newDices)){
       this.dices = newDices;
     }
 
+
   }
   highest() {
-    return this.dices?.reduce((d1,d2) => d1.number > d2.number ? d1 : d2);
+    return this.dices?.reduce((d1,d2) => this.sum(d1.number) > this.sum(d2.number) ? d1 : d2);
   }
   async reset(mode: 'reset' | 'delete'){
     await this.http.get<Dice[]>(AppComponent.API_URL + '?action=' + mode).toPromise();
+    if(mode === 'delete'){
+      this.isAdded = false;
+    }
     this.updateList();
   }
   async addName(){
@@ -52,10 +80,19 @@ export class AppComponent {
     return this.dices?.filter((d) => d.name === this.name)[0];
   }
   diceNumber(){
-    const oldNumber = this.getMyDice().number;
-    do{
-      this.getMyDice().number = Math.floor(Math.random() * 6) + 1;
-    }while(this.getMyDice().number === oldNumber);
+    //const oldNumber = this.getMyDice().number;
+    //do{
+      this.getMyDice().number = [
+        Math.floor(Math.random() * 6) + 1,
+        Math.floor(Math.random() * 6) + 1,
+      ];
+    //}while(this.getMyDice().number === oldNumber);
+  }
+  sum(numbers: number[]){
+    if(!numbers){
+      return 0;
+    }
+    return numbers?.reduce((a,b) => a + b);
   }
   startDice(){
     this.isDicing = true;
@@ -63,8 +100,8 @@ export class AppComponent {
     this.diceNumber();
     setTimeout(async () => {
       clearInterval(int);
+      await this.http.get<Dice[]>(AppComponent.API_URL + '?action=put&name=' + this.name + '&dice=true').toPromise();
       this.isDicing = false;
-      await this.http.get<Dice[]>(AppComponent.API_URL + '?action=put&name=' + this.name + '&number=' + this.getMyDice().number).toPromise();
       this.updateList();
     }, 5000);
   }
@@ -72,5 +109,5 @@ export class AppComponent {
 
 export interface Dice{
   name: string;
-  number: number;
+  number: number[];
 }

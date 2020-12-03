@@ -1,40 +1,75 @@
-.group{
-    display: flex;
-    width: 100%;;
-    align-items: center;
-    mat-form-field{
-        flex-grow: 1;
-        margin-right: 20px;
-    }
+.group {
+  display: flex;
+  width: 100%;
+  ;
+  align-items: center;
+
+  mat-form-field {
+    flex-grow: 1;
+    margin-right: 20px;
+  }
 }
-.dice{
-    display: flex;
-    padding:10px 20px;
-    align-items: center;   
-    .name{
-        flex-grow: 1;
+
+.dice {
+  display: flex;
+  padding: 10px 20px;
+  align-items: center;
+  height: 50px;
+
+  .name {
+    flex-grow: 1;
+  }
+
+  .action {
+    margin-left: 20px;
+  }
+
+  .result {
+    .dice-bg {
+      width: 35px;
+      height: 35px;
     }
-    .action{
-        margin-left:20px;
-    }
-    .result{
-        .dice-bg{
-            width:35px;
-            height:35px;
-        }
-    }
-    &.highest{
-        background-color: #fcc;
-    }
-    &.dicing{
-        background-color: #eee;
-    }
+  }
+
+  &.highest {
+    background-color: rgba(255,255,255,0.45);
+  }
+
+  &.dicing {
+    background-color: rgba(0,100,255,0.25);
+  }
 }
-.admin{
-    margin-top: 50px;
+
+.admin {
+  margin-top: 50px;
 }
-.danger{
-    display: flex;
-    width:100%;
-    justify-content: space-evenly;
+
+.danger {
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+}
+
+.snow {
+  position: absolute;
+  background-color: white;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.content {
+  position: relative;
+  z-index: 3;
+}
+.bg{
+    left:0;
+    top:0;
+    position: fixed;
+    opacity: 0.3;
+    width: 100%;
+    height: 100%;
+    background-image: url('../assets/landscape.svg');
+    background-attachment: fixed;
+    background-size: cover;
+    overflow: hidden;
 }
