@@ -16,15 +16,15 @@
   <hr>
   <h1>Würfel-Ergebnisse</h1>
   <div class="results">
-    <div *ngFor="let dice of dices" class=dice [class.highest]="dice.number && sum(highest().number) == sum(dice.number)"
+    <div *ngFor="let dice of dices" class=dice [class.highest]="sum(highest().number) == sum(dice.number)"
       [class.dicing]="isDicing && dice.name === name">
       <div class=name>{{dice.name}}</div>
       <div class=result>
         <ng-container *ngIf="!dice.number ">Noch nicht gewürfelt</ng-container>
         <ng-container *ngIf="dice.number"><img *ngFor="let n of dice.number" src="../assets/dice-{{n}}.svg" class=dice-bg></ng-container>
       </div>
-      <div class=action *ngIf="dice.name === name && isAdded">
-        <button mat-raised-button color="primary" *ngIf="!dice.number" (click)="startDice()">Würfeln!</button>
+      <div class=action *ngIf="dice.name === name && isAdded && !dice.number">
+        <button mat-raised-button color="primary" (click)="startDice()">Würfeln!</button>
       </div>
     </div>
   </div>
