@@ -1,13 +1,13 @@
 <div class=bg>
-  <div class="snow" *ngFor="let s of snow"
+  <!--<div class="snow" *ngFor="let s of snow"
     [ngStyle]="{left:s.x+'%','top':s.y+'%','width':s.size+'px','height':s.size+'px','filter':'blur(2px) brightness(-100)'}">
-  </div>
+  </div>-->
 </div>
 <div class=content>
   <h1>Mitmachen!</h1>
   <div class=group>
     <mat-form-field appearance="outline">
-      <mat-label>Dein Name</mat-label>
+      <mat-label>{{label}}</mat-label>
       <input matInput type="text" [(ngModel)]="name" [disabled]="isAdded">
     </mat-form-field>
     <div><button mat-raised-button color="primary" (click)="addName()" [disabled]="isAdded || !name">Eintragen</button>
@@ -17,7 +17,7 @@
   <h1>Würfel-Ergebnisse</h1>
   <div class="results">
     <div *ngFor="let dice of dices" class=dice [class.highest]="sum(highest().number) == sum(dice.number)"
-      [class.dicing]="isDicing && dice.name === name">
+         [class.dicing]="isDicing && dice.name === name">
       <div class=name>{{dice.name}}</div>
       <div class=result>
         <ng-container *ngIf="!dice.number ">Noch nicht gewürfelt</ng-container>
@@ -29,9 +29,11 @@
     </div>
   </div>
 </div>
-<hr>
-<h2 class=admin>Für den Moderator</h2>
-<div class=danger>
-  <button mat-raised-button color="secondary" (click)="reset('reset')" [disabled]="!dices?.length">Alle Würfel zurücksetzen</button>
-  <button mat-raised-button color="secondary" (click)="reset('delete')" [disabled]="!dices?.length">Alle Nutzer löschen</button>
-</div>
+<ng-container *ngIf="name === adminName">
+  <hr>
+  <h2 class=admin>Für den Moderator</h2>
+  <div class=danger>
+    <button mat-raised-button color="secondary" (click)="reset('reset')" [disabled]="!dices?.length">Alle Würfel zurücksetzen</button>
+    <button mat-raised-button color="secondary" (click)="reset('delete')" [disabled]="!dices?.length">Alle Nutzer löschen</button>
+  </div>
+</ng-container>

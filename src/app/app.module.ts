@@ -8,7 +8,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpClientModule } from '@angular/common/http';
+import {Router, RouterModule, Routes} from '@angular/router';
 
+const routes: Routes = [
+  { path: '', component: AppComponent }
+];
 @NgModule({
   declarations: [
     AppComponent
@@ -21,8 +25,11 @@ import { HttpClientModule } from '@angular/common/http';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    RouterModule.forRoot(routes),
   ],
-  providers: [HttpClientModule],
+  providers: [
+    HttpClientModule,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
