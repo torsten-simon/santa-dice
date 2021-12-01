@@ -25,7 +25,7 @@ export class AppComponent {
   }
 
   static API_URL = 'api.php';
-  snowCount = 200;
+  snowCount = 500;
   snow: any = [];
   adminName = environment.adminName;
   name: string;
@@ -35,10 +35,15 @@ export class AppComponent {
   label = '';
 
   private renderSnow() {
-    this.ngZone.runOutsideAngular(() =>
+    this.ngZone.runOutsideAngular(() => {
+      while (this.snow.length < this.snowCount / 2) {
+        this.snow.push({y: Math.random() * window.innerHeight, x: Math.random() * 100, size: Math.random() * 5 + 3,
+          direction: Math.random() - 0.5, speed: Math.random() * 0.5 + 0.5});
+      }
       setTimeout(() => {
         if (this.snow.length < this.snowCount && Math.random() < 0.5) {
-          this.snow.push({y: -5, x: Math.random() * 100, size: Math.random() * 5 + 3, direction: Math.random() - 0.5, speed: Math.random() * 0.5 + 0.5});
+          this.snow.push({y: -5, x: Math.random() * 100, size: Math.random() * 5 + 3,
+            direction: Math.random() - 0.5, speed: Math.random() * 0.5 + 0.5});
         }
         const copy = [];
         for (const s of this.snow) {
@@ -51,7 +56,8 @@ export class AppComponent {
         this.snow = copy;
         this.ref.tick();
         this.renderSnow();
-      }, 1000. / 30.));
+      }, 1000. / 60.);
+    });
   }
   async updateList() {
     let newDices = await this.http.get<Dice[]>(AppComponent.API_URL).toPromise();
@@ -80,6 +86,9 @@ export class AppComponent {
   }
   async addName() {
     this.isAdded = true;
+    if(this.name === this.adminName) {
+      return;
+    }
     localStorage.setItem('name', this.name);
     // only add if not in list
     if (!this.getMyDice()) {
